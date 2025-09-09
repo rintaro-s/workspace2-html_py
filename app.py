@@ -1205,11 +1205,15 @@ def handle_upload_file():
           user['id'], server_id, feature_id))
     conn.commit()
     conn.close()
-    
+    # 返却データに保存後の安全なファイル名とURLを含める
+    stored_filename = safe_filename
+    file_url = f"/files/uploads/{stored_filename}"
     return jsonify({'success': True, 'data': {
         'fileId': file_id,
-        'filename': file.filename,
-        'fileSize': os.path.getsize(file_path)
+        'originalFilename': file.filename,
+        'storedFilename': stored_filename,
+        'fileSize': os.path.getsize(file_path),
+        'url': file_url
     }})
 
 def handle_create_invite():

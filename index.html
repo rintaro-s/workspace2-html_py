@@ -415,6 +415,7 @@
                 title: '日記を書く',
                 fields: [
                     {name: 'title', placeholder: 'タイトル', type: 'text'},
+                    {name: 'category', placeholder: 'カテゴリ（進捗報告、日常、アイデアなど）', type: 'text'},
                     {name: 'content', placeholder: '今日の出来事や感想を書いてください...', type: 'textarea'},
                     {name: 'mood', placeholder: '気分', type: 'select', options: [
                         {value: '😊', label: '😊 嬉しい'},
@@ -1300,21 +1301,21 @@
                                         <div class="space-y-8">
                                             <div class="bg-blue-600/20 border border-blue-600/30 rounded-lg p-6">
                                                 <h3 class="text-xl font-bold text-white mb-2">📊 アンケート結果</h3>
-                                                <p class="text-blue-300">合計 ${Object.keys(responses).length} 人が回答しました</p>
+                                                <p class="text-blue-300">合計 ${activeSurvey.responses ? activeSurvey.responses.length : 0} 人が回答しました</p>
                                             </div>
                                             
                                             ${activeSurvey.questions.map((q, qIndex) => {
                                                 // デバッグ用ログ出力
                                                 console.log('Survey responses for question', q.id, ':', responses);
                                                 
-                                                const qResponses = Object.values(responses || {}).map(userResponse => {
+                                                const qResponses = (activeSurvey.responses || []).map(response => {
                                                     try {
-                                                        // 文字列の場合はJSONパース
-                                                        const parsed = typeof userResponse === 'string' ? JSON.parse(userResponse) : userResponse;
-                                                        return parsed[q.id];
+                                                        // responsesフィールドから回答を取得
+                                                        const responseData = response.responses;
+                                                        return responseData[q.id];
                                                     } catch (e) {
-                                                        console.warn('Failed to parse response:', userResponse, e);
-                                                        return userResponse[q.id];
+                                                        console.warn('Failed to parse response:', response, e);
+                                                        return null;
                                                     }
                                                 }).filter(r => r !== undefined && r !== null && r !== '');
                                                 
@@ -1624,7 +1625,7 @@
                                         ${state.isEditingWiki ? `
                                             <textarea id="wiki-content-edit" class="w-full h-96 bg-black/20 border border-white/20 rounded-lg p-4 text-white resize-none" placeholder="Write your content here...">${currentPage.content}</textarea>
                                         ` : `
-                                            <div class="text-gray-200 leading-relaxed whitespace-pre-wrap">${currentPage.content}</div>
+                                            <div class="text-gray-200 leading-relaxed">${convertMarkdownToHtml(currentPage.content)}</div>
                                         `}
                                     </div>
                                 </div>
@@ -2032,9 +2033,13 @@
                             <div class="flex-1 p-8 overflow-y-auto">
                                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
                                     ${(activeAlbum.photos || []).map((photo, index) => `
-                                        <div class="album-photo bg-gray-800 aspect-square flex items-center justify-center cursor-pointer group relative" data-photo-index="${index}">
-                                            <button onclick="deletePhoto('${activeAlbumId}', ${index})" class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity text-red-400 hover:text-red-300 w-6 h-6 flex items-center justify-center bg-black/50 rounded z-10" title="写真削除">×</button>
-                                            <i data-lucide="image" class="w-8 h-8 text-gray-500"></i>
+                                        <div class="album-photo bg-gray-800 aspect-square flex items-center justify-center cursor-pointer group relative overflow-hidden rounded-lg" data-photo-index="${index}" onclick="viewPhoto('${activeAlbumId}', ${index})">
+                                            <button onclick="event.stopPropagation(); deletePhoto('${activeAlbumId}', ${index})" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-red-400 hover:text-red-300 w-6 h-6 flex items-center justify-center bg-black/70 rounded z-10" title="写真削除">×</button>
+                                            ${photo.url ? `
+                                                <img src="/file/${photo.filename}" alt="${photo.caption || ''}" class="w-full h-full object-cover">
+                                            ` : `
+                                                <i data-lucide="image" class="w-8 h-8 text-gray-500"></i>
+                                            `}
                                             <div class="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
                                                 <div class="text-white text-center">
                                                     <i data-lucide="eye" class="w-6 h-6 mx-auto mb-1"></i>
@@ -2042,7 +2047,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    `).join('') || '<div class="col-span-full text-center text-gray-400 py-12">このアルバムにはまだ写真がありません</div>'}
+                                    `).join('') || '<div class="col-span-full text-center text-gray-400 py-12">このアルバムにはまだ写真がありません<br><button data-action="upload-photos" class="mt-4 gradient-button">写真をアップロード</button></div>'}
                                 </div>
                             </div>
                         </div>`;
@@ -2092,6 +2097,7 @@
                                                         <span>投稿者: ${entry.author}</span>
                                                         <span>•</span>
                                                         <span>${new Date(entry.created_at * 1000).toLocaleDateString('ja-JP')}</span>
+                                                        ${entry.category ? `<span>•</span><span class="bg-blue-600/30 px-2 py-1 rounded text-blue-300">${entry.category}</span>` : ''}
                                                         ${entry.mood ? `<span>•</span><span class="bg-yellow-600/30 px-2 py-1 rounded">${entry.mood}</span>` : ''}
                                                     </div>
                                                 </div>
@@ -2411,12 +2417,18 @@
         function loadWhiteboardData(boardId) {
             if (!boardId || !state.activeFeatureId) return;
             
-            const feature = state.features[state.activeServerId].find(f => f.id === state.activeFeatureId);
-            const content = state.content[feature.id] || {};
+            const content = state.content[state.activeFeatureId] || {};
             
             if (content.boards && content.boards[boardId] && content.boards[boardId].elements) {
                 try {
-                    const data = JSON.parse(content.boards[boardId].elements);
+                    let data;
+                    // elementsが既にオブジェクトの場合はそのまま使用、文字列の場合はパース
+                    if (typeof content.boards[boardId].elements === 'string') {
+                        data = JSON.parse(content.boards[boardId].elements);
+                    } else {
+                        data = content.boards[boardId].elements;
+                    }
+                    
                     if (data.imageData && whiteboardCtx) {
                         const img = new Image();
                         img.onload = function() {
@@ -2437,28 +2449,26 @@
             try {
                 const imageData = whiteboardCanvas.toDataURL('image/png');
                 
-                // サーバーに保存し、同時にローカル状態も更新
-                apiCall('saveWhiteboard', {
-                    featureId: state.activeFeatureId,
-                    boardId: state.activeBoardId,
-                    elements: JSON.stringify({ imageData: imageData })
-                }).then(result => {
-                    if (result) {
+                // 新しい統一されたサーバー保存方式を使用
+                const content = state.content[state.activeFeatureId] || {};
+                if (!content.boards) content.boards = {};
+                if (!content.boards[state.activeBoardId]) {
+                    content.boards[state.activeBoardId] = {
+                        id: state.activeBoardId,
+                        name: 'ホワイトボード',
+                        created_at: Date.now() / 1000
+                    };
+                }
+                
+                content.boards[state.activeBoardId].elements = { imageData: imageData };
+                content.boards[state.activeBoardId].updated_at = Date.now() / 1000;
+                
+                // サーバーに保存
+                updateFeatureContent(state.activeFeatureId, content).then(saved => {
+                    if (saved) {
                         console.log('Simple whiteboard auto-saved');
-                        // ローカル状態を更新
-                        if (state.content[state.activeFeatureId]) {
-                            if (!state.content[state.activeFeatureId].boards) {
-                                state.content[state.activeFeatureId].boards = {};
-                            }
-                            if (!state.content[state.activeFeatureId].boards[state.activeBoardId]) {
-                                state.content[state.activeFeatureId].boards[state.activeBoardId] = {
-                                    id: state.activeBoardId,
-                                    name: 'ホワイトボード'
-                                };
-                            }
-                            state.content[state.activeFeatureId].boards[state.activeBoardId].elements = { imageData: imageData };
-                            state.content[state.activeFeatureId].boards[state.activeBoardId].updated_at = Date.now();
-                        }
+                    } else {
+                        console.error('Failed to save whiteboard');
                     }
                 }).catch(error => {
                     console.error('Error auto-saving whiteboard:', error);
@@ -3443,6 +3453,82 @@
                 }
             },
 
+            // 写真アップロード機能
+            'upload-photos': async () => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.multiple = true;
+                input.accept = 'image/*';
+                
+                input.onchange = async (e) => {
+                    const files = Array.from(e.target.files);
+                    if (files.length === 0) return;
+                    
+                    for (const file of files) {
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        
+                        try {
+                            // サーバーの /api.cgi uploadFile エンドポイントを使用
+                            formData.append('action', 'uploadFile');
+                            formData.append('serverId', state.activeServerId);
+                            formData.append('featureId', state.activeFeatureId);
+
+                            const response = await fetch('/api.cgi', {
+                                method: 'POST',
+                                body: formData
+                            });
+                            
+                            if (response.ok) {
+                                const json = await response.json();
+                                const result = json.data || {};
+                                
+                                // アルバムに写真を追加
+                                const content = state.content[state.activeFeatureId] || {};
+                                if (!content.albums) content.albums = {};
+                                if (!content.albums[state.activeAlbumId]) {
+                                    content.albums[state.activeAlbumId] = {
+                                        id: state.activeAlbumId,
+                                        title: 'New Album',
+                                        photos: []
+                                    };
+                                }
+                                
+                                if (!content.albums[state.activeAlbumId].photos) {
+                                    content.albums[state.activeAlbumId].photos = [];
+                                }
+                                
+                                content.albums[state.activeAlbumId].photos.push({
+                                    filename: result.storedFilename || result.filename || '',
+                                    originalFilename: result.originalFilename || result.filename || '',
+                                    url: result.url || `/files/uploads/${result.storedFilename || result.filename}`,
+                                    caption: '',
+                                    uploaded_at: Date.now() / 1000,
+                                    uploaded_by: state.currentUser.username
+                                });
+                                
+                                // サーバーに保存
+                                const saved = await updateFeatureContent(state.activeFeatureId, content);
+                                if (saved) {
+                                    render();
+                                } else {
+                                    showNotification('写真の保存に失敗しました', 'error');
+                                }
+                            } else {
+                                showNotification('写真のアップロードに失敗しました', 'error');
+                            }
+                        } catch (error) {
+                            console.error('Photo upload error:', error);
+                            showNotification('写真のアップロードに失敗しました', 'error');
+                        }
+                    }
+                    
+                    showNotification('写真をアップロードしました', 'success');
+                };
+                
+                input.click();
+            },
+
             // 予算管理アクション
             'add-transaction': async () => {
                 const result = await showModal('add-transaction');
@@ -3615,6 +3701,7 @@
                     content.entries[entryId] = {
                         id: entryId,
                         title: result.title,
+                        category: result.category || '一般',
                         content: result.content,
                         mood: result.mood,
                         tags: result.tags ? result.tags.split(',').map(t => t.trim()) : [],
@@ -4286,6 +4373,44 @@
             }
         }
 
+        // Markdown変換関数
+        function convertMarkdownToHtml(markdown) {
+            if (!markdown) return '';
+            
+            let html = markdown
+                // ヘッダー
+                .replace(/^### (.*$)/gim, '<h3 class="text-lg font-semibold text-white mt-4 mb-2">$1</h3>')
+                .replace(/^## (.*$)/gim, '<h2 class="text-xl font-bold text-white mt-6 mb-3">$1</h2>')
+                .replace(/^# (.*$)/gim, '<h1 class="text-2xl font-bold text-white mt-8 mb-4">$1</h1>')
+                // 太字
+                .replace(/\*\*(.*)\*\*/gim, '<strong class="font-bold text-white">$1</strong>')
+                // イタリック
+                .replace(/\*(.*)\*/gim, '<em class="italic text-gray-300">$1</em>')
+                // コードブロック
+                .replace(/```([\s\S]*?)```/gim, '<pre class="bg-gray-800 p-4 rounded-lg my-4 overflow-x-auto"><code class="text-green-400">$1</code></pre>')
+                // インラインコード
+                .replace(/`([^`]*)`/gim, '<code class="bg-gray-800 px-2 py-1 rounded text-green-400">$1</code>')
+                // リンク
+                .replace(/\[([^\]]*)\]\(([^\)]*)\)/gim, '<a href="$2" class="text-blue-400 hover:text-blue-300 underline" target="_blank">$1</a>')
+                // リスト
+                .replace(/^\- (.*$)/gim, '<li class="ml-4 text-gray-200">• $1</li>')
+                .replace(/^\* (.*$)/gim, '<li class="ml-4 text-gray-200">• $1</li>')
+                // 番号付きリスト
+                .replace(/^\d+\. (.*$)/gim, '<li class="ml-4 text-gray-200">$1</li>')
+                // 水平線
+                .replace(/^---$/gim, '<hr class="border-gray-600 my-6">')
+                // 改行
+                .replace(/\n\n/gim, '</p><p class="text-gray-200 mb-4">')
+                .replace(/\n/gim, '<br>');
+            
+            // 段落で囲む
+            if (html && !html.startsWith('<')) {
+                html = '<p class="text-gray-200 mb-4">' + html + '</p>';
+            }
+            
+            return html;
+        }
+
         // グローバル関数定義（HTMLから呼び出される）
         window.editWikiPage = function() {
             state.isEditingWiki = true;
@@ -4348,6 +4473,74 @@
 
         window.createNewWikiPage = async function() {
             await ACTIONS['create-wiki-page']();
+        };
+
+        // 写真表示機能
+        window.viewPhoto = function(albumId, photoIndex) {
+            const content = state.content[state.activeFeatureId] || {};
+            const album = content.albums && content.albums[albumId];
+            if (!album || !album.photos || !album.photos[photoIndex]) return;
+            
+            const photo = album.photos[photoIndex];
+            
+            // モーダルで写真表示
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-50';
+            modal.onclick = (e) => {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            };
+            
+            modal.innerHTML = `
+                <div class="max-w-4xl max-h-full p-4">
+                    <div class="relative bg-white rounded-lg overflow-hidden">
+                        <button onclick="document.body.removeChild(this.closest('.fixed'))" class="absolute top-4 right-4 text-white bg-black/50 hover:bg-black/70 w-8 h-8 rounded-full flex items-center justify-center z-10">×</button>
+                        <img src="${photo.url}" alt="${photo.caption || ''}" class="max-w-full max-h-[80vh] object-contain">
+                        ${photo.caption ? `<div class="p-4 bg-gray-100"><p class="text-gray-800">${photo.caption}</p></div>` : ''}
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        };
+
+        // 写真削除機能
+        window.deletePhoto = async function(albumId, photoIndex) {
+            if (!confirm('この写真を削除しますか？')) return;
+            
+            const content = state.content[state.activeFeatureId] || {};
+            if (content.albums && content.albums[albumId] && content.albums[albumId].photos) {
+                content.albums[albumId].photos.splice(photoIndex, 1);
+                
+                // サーバーに保存
+                const saved = await updateFeatureContent(state.activeFeatureId, content);
+                if (saved) {
+                    render();
+                    showNotification('写真を削除しました', 'success');
+                } else {
+                    showNotification('削除に失敗しました', 'error');
+                }
+            }
+        };
+
+        // 日記削除機能
+        window.deleteDiaryEntry = async function(entryId) {
+            if (!confirm('この日記エントリを削除しますか？')) return;
+            
+            const content = state.content[state.activeFeatureId] || {};
+            if (content.entries && content.entries[entryId]) {
+                delete content.entries[entryId];
+                
+                // サーバーに保存
+                const saved = await updateFeatureContent(state.activeFeatureId, content);
+                if (saved) {
+                    render();
+                    showNotification('日記エントリを削除しました', 'success');
+                } else {
+                    showNotification('削除に失敗しました', 'error');
+                }
+            }
         };
 
         // アプリケーション開始
