@@ -1,0 +1,35 @@
+FROM python:3.10-slim
+
+# システムパッケージを更新
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# 作業ディレクトリを設定
+WORKDIR /app
+
+# 非rootユーザーを作成
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# 必要なディレクトリを作成し、適切な権限を設定
+RUN mkdir -p /app/data && chown -R appuser:appuser /app
+
+# 依存関係ファイルをコピーしてインストール
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# アプリケーションファイルをコピー
+COPY --chown=appuser:appuser . .
+
+# 非rootユーザーに切り替え
+USER appuser
+
+# ヘルスチェック用のエンドポイントを追加
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8060/ || exit 1
+
+# ポート8060を公開
+EXPOSE 8060
+
+# アプリケーションを開始
+CMD ["python", "app.py"]

@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  circle-platform:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+    ports:
+      - "8060:8060"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    environment:
+      - FLASK_ENV=production
+      - FLASK_DEBUG=false
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-here}
+      - DATABASE_PATH=/app/data/circle_platform.db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8060/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # 将来的にデータベースを分離する場合の例（コメントアウト）
+  # database:
+  #   image: postgres:15-alpine
+  #   environment:
+  #     - POSTGRES_DB=circle_platform
+  #     - POSTGRES_USER=circle_user
+  #     - POSTGRES_PASSWORD=${DB_PASSWORD:-change-this-password}
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+
+  # リバースプロキシ（将来的なHTTPS対応）
+  # nginx:
+  #   image: nginx:alpine
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #     - ./certs:/etc/nginx/certs
+  #   depends_on:
+  #     - circle-platform
+  #   restart: unless-stopped
+
+# volumes:
+#   postgres_data:
