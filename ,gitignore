@@ -1,0 +1,15 @@
+# OSやエディタの一時ファイル
+.DS_Store # macOS
+.vscode/ # VS Code
+.idea/ # IntelliJ / JetBrains IDEs
+
+# パッケージ管理
+node_modules/ # Node.js
+vendor/ # PHP, Ruby
+
+# Python
+__pycache__/
+*.pyc
+.env*
+venv/
+.venv/
