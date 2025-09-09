@@ -1111,7 +1111,7 @@
                     const currentFolderId = content?.currentFolder || 'root';
                     const currentFolder = folders[currentFolderId] || folders.root;
                     const breadcrumb = getBreadcrumb(folders, currentFolderId);
-                    const files = content?.files || [];
+                    const files = state?.files || [];
                     const serverFiles = files.filter(f => f.serverId === state.activeServerId && f.featureId === state.activeFeatureId);
                     
                     return `
@@ -2437,14 +2437,28 @@
             try {
                 const imageData = whiteboardCanvas.toDataURL('image/png');
                 
-                // 定期的に自動保存
+                // サーバーに保存し、同時にローカル状態も更新
                 apiCall('saveWhiteboard', {
                     featureId: state.activeFeatureId,
                     boardId: state.activeBoardId,
                     elements: JSON.stringify({ imageData: imageData })
                 }).then(result => {
                     if (result) {
-                        console.log('Whiteboard auto-saved');
+                        console.log('Simple whiteboard auto-saved');
+                        // ローカル状態を更新
+                        if (state.content[state.activeFeatureId]) {
+                            if (!state.content[state.activeFeatureId].boards) {
+                                state.content[state.activeFeatureId].boards = {};
+                            }
+                            if (!state.content[state.activeFeatureId].boards[state.activeBoardId]) {
+                                state.content[state.activeFeatureId].boards[state.activeBoardId] = {
+                                    id: state.activeBoardId,
+                                    name: 'ホワイトボード'
+                                };
+                            }
+                            state.content[state.activeFeatureId].boards[state.activeBoardId].elements = { imageData: imageData };
+                            state.content[state.activeFeatureId].boards[state.activeBoardId].updated_at = Date.now();
+                        }
                     }
                 }).catch(error => {
                     console.error('Error auto-saving whiteboard:', error);
@@ -2497,14 +2511,15 @@
                         elements: JSON.stringify(data)
                     }).then(result => {
                         if (result) {
-                            console.log('Whiteboard data saved to server');
+                            console.log('Fabric whiteboard data saved to server');
                             // Update local state
-                            const feature = state.features[state.activeServerId].find(f => f.id === state.activeFeatureId);
-                            const content = state.content[feature.id] || {};
-                            if (!content.boards) content.boards = {};
-                            if (content.boards[state.activeBoardId]) {
-                                content.boards[state.activeBoardId].elements = data;
-                                state.content[feature.id] = content;
+                            if (state.content[state.activeFeatureId]) {
+                                if (!state.content[state.activeFeatureId].boards) {
+                                    state.content[state.activeFeatureId].boards = {};
+                                }
+                                if (state.content[state.activeFeatureId].boards[state.activeBoardId]) {
+                                    state.content[state.activeFeatureId].boards[state.activeBoardId].elements = data;
+                                }
                             }
                         }
                     }).catch(error => {
@@ -3128,14 +3143,58 @@
             'create-survey': async () => {
                 const result = await showModal('create-survey');
                 if(result) {
-                    const data = await apiCall('createSurvey', {
-                        featureId: state.activeFeatureId,
+                    const content = state.content[state.activeFeatureId] || {};
+                    
+                    if (!content.surveys) content.surveys = {};
+                    
+                    const surveyId = Date.now().toString();
+                    content.surveys[surveyId] = {
+                        id: surveyId,
                         title: result.title,
-                        questions: JSON.stringify(result.questions)
-                    });
-                    if(data) {
-                        initializeApp(data);
+                        questions: result.questions,
+                        responses: [],
+                        created_at: Date.now() / 1000,
+                        author: state.currentUser.username
+                    };
+                    
+                    // サーバーに保存
+                    const saved = await updateFeatureContent(state.activeFeatureId, content);
+                    if (saved) {
+                        state.activeSurveyId = surveyId;
+                        render();
                         showNotification(`アンケート「${result.title}」を作成しました`, 'success');
+                    } else {
+                        showNotification('保存に失敗しました', 'error');
+                    }
+                }
+            },
+
+            // Wiki管理アクション
+            'create-wiki-page': async () => {
+                const result = await showModal('add-wiki-page');
+                if (result) {
+                    const content = state.content[state.activeFeatureId] || {};
+                    
+                    if (!content.pages) content.pages = {};
+                    
+                    const pageId = Date.now().toString();
+                    content.pages[pageId] = {
+                        id: pageId,
+                        title: result.title,
+                        content: result.content || '',
+                        author: state.currentUser.username,
+                        created_at: Date.now() / 1000,
+                        updated_at: Date.now() / 1000
+                    };
+                    
+                    // サーバーに保存
+                    const saved = await updateFeatureContent(state.activeFeatureId, content);
+                    if (saved) {
+                        state.activeWikiPageId = pageId;
+                        render();
+                        showNotification(`Wikiページ「${result.title}」を作成しました`, 'success');
+                    } else {
+                        showNotification('保存に失敗しました', 'error');
                     }
                 }
             },
@@ -3358,8 +3417,7 @@
             'create-event': async () => {
                 const result = await showModal('create-event');
                 if (result) {
-                    const feature = state.features[state.activeServerId].find(f => f.id === state.activeFeatureId);
-                    const content = state.content[feature.id] || {};
+                    const content = state.content[state.activeFeatureId] || {};
                     
                     if (!content.events) content.events = {};
                     
@@ -3370,13 +3428,18 @@
                         description: result.description,
                         date: result.date,
                         time: result.time,
-                        createdBy: state.user.username,
-                        createdAt: new Date().toISOString()
+                        createdBy: state.currentUser.username,
+                        createdAt: Date.now() / 1000
                     };
                     
-                    state.content[feature.id] = content;
-                    render();
-                    showNotification(`イベント「${result.title}」を作成しました`, 'success');
+                    // サーバーに保存
+                    const saved = await updateFeatureContent(state.activeFeatureId, content);
+                    if (saved) {
+                        render();
+                        showNotification(`イベント「${result.title}」を作成しました`, 'success');
+                    } else {
+                        showNotification('保存に失敗しました', 'error');
+                    }
                 }
             },
 
@@ -3384,8 +3447,7 @@
             'add-transaction': async () => {
                 const result = await showModal('add-transaction');
                 if (result) {
-                    const feature = state.features[state.activeServerId].find(f => f.id === state.activeFeatureId);
-                    const content = state.content[feature.id] || {};
+                    const content = state.content[state.activeFeatureId] || {};
                     
                     if (!content.transactions) content.transactions = {};
                     if (!content.accounts) content.accounts = {};
@@ -3407,17 +3469,21 @@
                         content.accounts[result.account].balance += parseFloat(result.amount);
                     }
                     
-                    state.content[feature.id] = content;
-                    render();
-                    showNotification(`取引「${result.description}」を追加しました`, 'success');
+                    // サーバーに保存
+                    const saved = await updateFeatureContent(state.activeFeatureId, content);
+                    if (saved) {
+                        render();
+                        showNotification(`取引「${result.description}」を追加しました`, 'success');
+                    } else {
+                        showNotification('保存に失敗しました', 'error');
+                    }
                 }
             },
 
             'create-account': async () => {
                 const result = await showModal('create-account');
                 if (result) {
-                    const feature = state.features[state.activeServerId].find(f => f.id === state.activeFeatureId);
-                    const content = state.content[feature.id] || {};
+                    const content = state.content[state.activeFeatureId] || {};
                     
                     if (!content.accounts) content.accounts = {};
                     
@@ -3431,9 +3497,14 @@
                         createdAt: Date.now()
                     };
                     
-                    state.content[feature.id] = content;
-                    render();
-                    showNotification(`口座「${result.name}」を作成しました`, 'success');
+                    // サーバーに保存
+                    const saved = await updateFeatureContent(state.activeFeatureId, content);
+                    if (saved) {
+                        render();
+                        showNotification(`口座「${result.name}」を作成しました`, 'success');
+                    } else {
+                        showNotification('保存に失敗しました', 'error');
+                    }
                 }
             },
 
@@ -3441,8 +3512,7 @@
             'add-inventory-item': async () => {
                 const result = await showModal('add-inventory-item');
                 if (result) {
-                    const feature = state.features[state.activeServerId].find(f => f.id === state.activeFeatureId);
-                    const content = state.content[feature.id] || {};
+                    const content = state.content[state.activeFeatureId] || {};
                     
                     if (!content.items) content.items = {};
                     
@@ -3461,9 +3531,14 @@
                         createdAt: Date.now()
                     };
                     
-                    state.content[feature.id] = content;
-                    render();
-                    showNotification(`アイテム「${result.name}」を追加しました`, 'success');
+                    // サーバーに保存
+                    const saved = await updateFeatureContent(state.activeFeatureId, content);
+                    if (saved) {
+                        render();
+                        showNotification(`アイテム「${result.name}」を追加しました`, 'success');
+                    } else {
+                        showNotification('保存に失敗しました', 'error');
+                    }
                 }
             },
 
@@ -3471,8 +3546,7 @@
             'create-album': async () => {
                 const result = await showModal('create-album');
                 if (result) {
-                    const feature = state.features[state.activeServerId].find(f => f.id === state.activeFeatureId);
-                    const content = state.content[feature.id] || {};
+                    const content = state.content[state.activeFeatureId] || {};
                     
                     if (!content.albums) content.albums = {};
                     
@@ -3486,10 +3560,15 @@
                         createdAt: Date.now()
                     };
                     
-                    state.content[feature.id] = content;
-                    state.activeAlbumId = albumId;
-                    render();
-                    showNotification(`アルバム「${result.title}」を作成しました`, 'success');
+                    // サーバーに保存
+                    const saved = await updateFeatureContent(state.activeFeatureId, content);
+                    if (saved) {
+                        state.activeAlbumId = albumId;
+                        render();
+                        showNotification(`アルバム「${result.title}」を作成しました`, 'success');
+                    } else {
+                        showNotification('保存に失敗しました', 'error');
+                    }
                 }
             },
 
@@ -3528,8 +3607,7 @@
             'create-diary-entry': async () => {
                 const result = await showModal('create-diary-entry');
                 if (result) {
-                    const feature = state.features[state.activeServerId].find(f => f.id === state.activeFeatureId);
-                    const content = state.content[feature.id] || {};
+                    const content = state.content[state.activeFeatureId] || {};
                     
                     if (!content.entries) content.entries = {};
                     
@@ -3545,9 +3623,14 @@
                         created_at: Date.now() / 1000
                     };
                     
-                    state.content[feature.id] = content;
-                    render();
-                    showNotification(`日記「${result.title}」を作成しました`, 'success');
+                    // サーバーに保存
+                    const saved = await updateFeatureContent(state.activeFeatureId, content);
+                    if (saved) {
+                        render();
+                        showNotification(`日記「${result.title}」を作成しました`, 'success');
+                    } else {
+                        showNotification('保存に失敗しました', 'error');
+                    }
                 }
             }
         };
@@ -3879,6 +3962,27 @@
             }
         }
         
+        // === コンテンツ更新機能 ===
+        async function updateFeatureContent(featureId, contentData) {
+            try {
+                const result = await apiCall('updateFeatureContent', {
+                    featureId: featureId,
+                    content: JSON.stringify(contentData)
+                });
+                
+                if (result) {
+                    // ローカル状態を更新
+                    state.content[featureId] = contentData;
+                    console.log('Feature content updated:', featureId);
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                console.error('Error updating feature content:', error);
+                return false;
+            }
+        }
+
         // === ファイル操作関数 ===
         window.previewFile = function(file) {
             if (file.mimeType.startsWith('image/')) {
@@ -4130,15 +4234,28 @@
                         }
                     });
 
-                    const data = await apiCall('submitSurveyResponse', {
-                        featureId: state.activeFeatureId,
-                        surveyId: state.activeSurveyId,
-                        responses: JSON.stringify(responses)
-                    });
-                    
-                    if(data) {
-                        initializeApp(data);
-                        showNotification('アンケート回答を送信しました', 'success');
+                    const content = state.content[state.activeFeatureId] || {};
+                    if (content.surveys && content.surveys[state.activeSurveyId]) {
+                        // 回答を追加
+                        if (!content.surveys[state.activeSurveyId].responses) {
+                            content.surveys[state.activeSurveyId].responses = [];
+                        }
+                        
+                        content.surveys[state.activeSurveyId].responses.push({
+                            id: Date.now().toString(),
+                            responses: responses,
+                            respondent: state.currentUser.username,
+                            submitted_at: Date.now() / 1000
+                        });
+                        
+                        // サーバーに保存
+                        const saved = await updateFeatureContent(state.activeFeatureId, content);
+                        if (saved) {
+                            render();
+                            showNotification('アンケート回答を送信しました', 'success');
+                        } else {
+                            showNotification('回答の送信に失敗しました', 'error');
+                        }
                     }
                 }
             });
@@ -4168,6 +4285,70 @@
                 showAuth('login');
             }
         }
+
+        // グローバル関数定義（HTMLから呼び出される）
+        window.editWikiPage = function() {
+            state.isEditingWiki = true;
+            render();
+        };
+
+        window.saveWikiPage = async function() {
+            const title = document.getElementById('wiki-title-edit')?.innerText || '';
+            const content = document.getElementById('wiki-content-edit')?.value || '';
+            
+            if (!title.trim()) {
+                showNotification('タイトルを入力してください', 'error');
+                return;
+            }
+
+            const currentContent = state.content[state.activeFeatureId] || {};
+            if (currentContent.pages && currentContent.pages[state.activeWikiPageId]) {
+                currentContent.pages[state.activeWikiPageId].title = title;
+                currentContent.pages[state.activeWikiPageId].content = content;
+                currentContent.pages[state.activeWikiPageId].updated_at = Date.now() / 1000;
+                
+                // サーバーに保存
+                const saved = await updateFeatureContent(state.activeFeatureId, currentContent);
+                if (saved) {
+                    state.isEditingWiki = false;
+                    render();
+                    showNotification('Wikiページを保存しました', 'success');
+                } else {
+                    showNotification('保存に失敗しました', 'error');
+                }
+            }
+        };
+
+        window.cancelWikiEdit = function() {
+            state.isEditingWiki = false;
+            render();
+        };
+
+        window.deleteWikiPage = async function(pageId) {
+            if (confirm('このWikiページを削除しますか？')) {
+                const content = state.content[state.activeFeatureId] || {};
+                if (content.pages && content.pages[pageId]) {
+                    delete content.pages[pageId];
+                    
+                    // サーバーに保存
+                    const saved = await updateFeatureContent(state.activeFeatureId, content);
+                    if (saved) {
+                        // 他のページがあれば最初のものを選択
+                        const remainingPages = Object.keys(content.pages || {});
+                        state.activeWikiPageId = remainingPages.length > 0 ? remainingPages[0] : null;
+                        
+                        render();
+                        showNotification('Wikiページを削除しました', 'success');
+                    } else {
+                        showNotification('削除に失敗しました', 'error');
+                    }
+                }
+            }
+        };
+
+        window.createNewWikiPage = async function() {
+            await ACTIONS['create-wiki-page']();
+        };
 
         // アプリケーション開始
         main();

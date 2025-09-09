@@ -542,6 +542,10 @@ def api_handler():
             return handle_get_server_members()
         elif action == 'saveWhiteboardImage':
             return handle_save_whiteboard_image()
+        elif action == 'updateFeatureContent':
+            return handle_update_feature_content()
+        elif action == 'getFeatureContent':
+            return handle_get_feature_content()
         else:
             return jsonify({'success': False, 'error': f'Unknown action: {action}'})
     
@@ -1542,6 +1546,81 @@ def handle_save_whiteboard_image():
         
     except Exception as e:
         return jsonify({'success': False, 'error': f'画像保存エラー: {str(e)}'})
+
+def handle_update_feature_content():
+    """機能のコンテンツを更新する汎用的なハンドラー"""
+    user = get_current_user()
+    if not user:
+        return jsonify({'success': False, 'error': 'Not authenticated'})
+    
+    feature_id = request.form.get('featureId')
+    content_data = request.form.get('content')
+    
+    if not feature_id or not content_data:
+        return jsonify({'success': False, 'error': 'Feature ID and content are required'})
+    
+    try:
+        # JSONデータの検証
+        content = json.loads(content_data)
+        
+        conn = get_db_connection()
+        
+        # 既存のコンテンツを取得
+        existing_row = conn.execute(
+            'SELECT content FROM feature_content WHERE feature_id = ?', (feature_id,)
+        ).fetchone()
+        
+        if existing_row:
+            # 既存コンテンツを更新
+            conn.execute('''
+                UPDATE feature_content 
+                SET content = ?, updated_at = CURRENT_TIMESTAMP
+                WHERE feature_id = ?
+            ''', (json.dumps(content), feature_id))
+        else:
+            # 新規コンテンツを作成
+            conn.execute('''
+                INSERT INTO feature_content (feature_id, content, updated_at)
+                VALUES (?, ?, CURRENT_TIMESTAMP)
+            ''', (feature_id, json.dumps(content)))
+        
+        conn.commit()
+        conn.close()
+        
+        # 更新された状態を返す
+        state = get_user_state(user['id'])
+        return jsonify({'success': True, 'data': state})
+        
+    except json.JSONDecodeError:
+        return jsonify({'success': False, 'error': 'Invalid JSON data'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': f'Database error: {str(e)}'})
+
+def handle_get_feature_content():
+    """機能のコンテンツを取得する"""
+    user = get_current_user()
+    if not user:
+        return jsonify({'success': False, 'error': 'Not authenticated'})
+    
+    feature_id = request.form.get('featureId')
+    
+    if not feature_id:
+        return jsonify({'success': False, 'error': 'Feature ID is required'})
+    
+    conn = get_db_connection()
+    content_row = conn.execute(
+        'SELECT content FROM feature_content WHERE feature_id = ?', (feature_id,)
+    ).fetchone()
+    conn.close()
+    
+    if content_row:
+        try:
+            content = json.loads(content_row['content'])
+            return jsonify({'success': True, 'data': content})
+        except json.JSONDecodeError:
+            return jsonify({'success': False, 'error': 'Invalid content data'})
+    else:
+        return jsonify({'success': True, 'data': {}})
 
 if __name__ == '__main__':
     init_database()
