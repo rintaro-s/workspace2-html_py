@@ -13,3 +13,19 @@ __pycache__/
 .env*
 venv/
 .venv/
+
+# Next.js
+.next/
+out/
+.next/cache/
+.vercel/
+
+# Puma (Rails)
+tmp/pids/
+tmp/sockets/
+tmp/cache/
+log/puma.*
+tmp/pids/server.pid
+convert/backend/tmp/cache/*
+convert/backend/vendor/bundle/ruby/3.2.0/*
+convert/frontend/node_modules/*

@@ -1,0 +1,5 @@
+html, body, #__next { height: 100%; }
+body { margin: 0; background: #0b1020; color: #e8e8e8; }
+/* Minimal reset; Tailwind is loaded via CDN in index.html */
+html, body, #__next { height: 100%; }
+body { margin: 0; }

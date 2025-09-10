@@ -1,0 +1,306 @@
+=> Booting Puma
+=> Rails 7.1.5.2 application starting in development 
+=> Run `bin/rails server --help` for more startup options
+Puma starting in single mode...
+* Puma version: 6.6.1 ("Return to Forever")
+* Ruby version: ruby 3.2.4 (2024-04-23 revision af471c0e01) [x86_64-linux]
+*  Min threads: 5
+*  Max threads: 5
+*  Environment: development
+*          PID: 71907
+* Listening on http://127.0.0.1:3001
+Use Ctrl-C to stop
+Started POST "/api.cgi" for 127.0.0.1 at 2025-09-10 14:41:33 +0900
+Processing by ApiController#handle_request as */*
+  Parameters: {"username"=>"testuser", "password"=>"secret123"}
+Completed 200 OK in 2ms (Views: 0.1ms | ActiveRecord: 0.0ms | Allocations: 2770)
+
+
+Started POST "/api.cgi" for 127.0.0.1 at 2025-09-10 14:52:05 +0900
+Processing by ApiController#handle_request as */*
+  Parameters: {"username"=>"testuser", "password"=>"secret123"}
+Completed 200 OK in 0ms (Views: 0.1ms | ActiveRecord: 0.0ms | Allocations: 311)
+
+
+Started POST "/api.cgi" for 127.0.0.1 at 2025-09-10 14:52:56 +0900
+Processing by ApiController#handle_request as */*
+  Parameters: {"username"=>"testuser", "password"=>"secret123"}
+Completed 200 OK in 0ms (Views: 0.1ms | ActiveRecord: 0.0ms | Allocations: 310)
+
+
+Started POST "/api.cgi" for 127.0.0.1 at 2025-09-10 14:55:09 +0900
+Processing by ApiController#handle_request as */*
+  Parameters: {"username"=>"testuser", "password"=>"secret123"}
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."username" = ? LIMIT ?[0m  [["username", "testuser"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mUser Update (0.2ms)[0m  [1m[33mUPDATE "users" SET "last_login" = ?, "updated_at" = ? WHERE "users"."id" = ?[0m  [["last_login", "2025-09-10 05:55:09.277397"], ["updated_at", "2025-09-10 05:55:09.277881"], ["id", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mServer Load (0.1ms)[0m  [1m[34mSELECT "servers".* FROM "servers" JOIN server_members sm ON sm.server_id = servers.id WHERE (sm.user_id = 1) ORDER BY sm.joined_at[0m
+  [1m[36mFeatureContent Load (0.0ms)[0m  [1m[34mSELECT "feature_content".* FROM "feature_content" ORDER BY "feature_content"."feature_id" ASC LIMIT ?[0m  [["LIMIT", 1000]]
+Completed 200 OK in 34ms (Views: 0.1ms | ActiveRecord: 2.8ms | Allocations: 34621)
+
+
+Started POST "/api.cgi" for 127.0.0.1 at 2025-09-10 14:59:09 +0900
+Processing by ApiController#handle_request as */*
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 2], ["LIMIT", 1]]
+Completed 200 OK in 11ms (Views: 0.1ms | ActiveRecord: 1.6ms | Allocations: 5185)
+
+
+Started POST "/api.cgi" for 127.0.0.1 at 2025-09-10 14:59:15 +0900
+Processing by ApiController#handle_request as */*
+  Parameters: {"username"=>"rinta4", "password"=>"000000"}
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."username" = ? LIMIT ?[0m  [["username", "rinta4"], ["LIMIT", 1]]
+Completed 200 OK in 1ms (Views: 0.1ms | ActiveRecord: 0.2ms | Allocations: 622)
+
+
+Started POST "/api.cgi" for 127.0.0.1 at 2025-09-10 14:59:20 +0900
+Processing by ApiController#handle_request as */*
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 2], ["LIMIT", 1]]
+Completed 200 OK in 3ms (Views: 0.2ms | ActiveRecord: 0.1ms | Allocations: 646)
+
+
+Started POST "/api.cgi" for 127.0.0.1 at 2025-09-10 14:59:25 +0900
+Processing by ApiController#handle_request as */*
+  Parameters: {"username"=>"rinta4", "password"=>"000000"}
+  [1m[36mUser Exists? (0.2ms)[0m  [1m[34mSELECT 1 AS one FROM "users" WHERE "users"."username" = ? LIMIT ?[0m  [["username", "rinta4"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mUser Create (0.5ms)[0m  [1m[32mINSERT INTO "users" ("username", "password_hash", "nickname", "email", "admission_year", "graduation_year", "major", "student_id", "bio", "avatar", "ui_scale", "theme", "language", "timezone", "notification_settings", "privacy_settings", "last_login", "is_active", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["username", "rinta4"], ["password_hash", "91b4d142823f7d20c5f08df69122de43f35f057a988d9619f6d3138485c9a203"], ["nickname", nil], ["email", nil], ["admission_year", nil], ["graduation_year", nil], ["major", nil], ["student_id", nil], ["bio", nil], ["avatar", nil], ["ui_scale", "medium"], ["theme", "dark"], ["language", "ja"], ["timezone", "Asia/Tokyo"], ["notification_settings", "{}"], ["privacy_settings", "{}"], ["last_login", nil], ["is_active", 1], ["created_at", "2025-09-10 05:59:25.275528"], ["updated_at", "2025-09-10 05:59:25.275528"]]
+  [1m[36mTRANSACTION (1.8ms)[0m  [1m[36mcommit transaction[0m
+Completed 200 OK in 10ms (Views: 0.1ms | ActiveRecord: 2.7ms | Allocations: 7900)
+
+
+Started POST "/api.cgi" for 127.0.0.1 at 2025-09-10 14:59:35 +0900
+Processing by ApiController#handle_request as */*
+  Parameters: {"username"=>"rinta4", "password"=>"000000"}
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."username" = ? LIMIT ?[0m  [["username", "rinta4"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mUser Update (0.2ms)[0m  [1m[33mUPDATE "users" SET "last_login" = ?, "updated_at" = ? WHERE "users"."id" = ?[0m  [["last_login", "2025-09-10 05:59:35.063768"], ["updated_at", "2025-09-10 05:59:35.064241"], ["id", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mUser Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mServer Load (0.7ms)[0m  [1m[34mSELECT "servers".* FROM "servers" JOIN server_members sm ON sm.server_id = servers.id WHERE (sm.user_id = 1) ORDER BY sm.joined_at[0m
+  [1m[36mFeatureContent Load (0.1ms)[0m  [1m[34mSELECT "feature_content".* FROM "feature_content" ORDER BY "feature_content"."feature_id" ASC LIMIT ?[0m  [["LIMIT", 1000]]
+Completed 200 OK in 13ms (Views: 0.1ms | ActiveRecord: 1.6ms | Allocations: 3495)
+
+
+Started POST "/api.cgi" for 127.0.0.1 at 2025-09-10 14:59:44 +0900
+Processing by ApiController#handle_request as */*
+  Parameters: {"name"=>"aaa", "icon"=>"a"}
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mServer Create (0.2ms)[0m  [1m[32mINSERT INTO "servers" ("id", "name", "description", "icon", "banner", "owner_id", "is_public", "invite_code", "max_members", "settings", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["id", "server_1757483984885"], ["name", "aaa"], ["description", nil], ["icon", "a"], ["banner", nil], ["owner_id", 1], ["is_public", 0], ["invite_code", "G2qYakx_6IA"], ["max_members", 100], ["settings", "{}"], ["created_at", "2025-09-10 05:59:44.895902"], ["updated_at", "2025-09-10 05:59:44.895902"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mUser Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mServerMember Create (0.2ms)[0m  [1m[32mINSERT INTO "server_members" ("server_id", "user_id", "role", "invited_by", "permissions") VALUES (?, ?, ?, ?, ?) RETURNING "id", "joined_at"[0m  [["server_id", "server_1757483984885"], ["user_id", 1], ["role", "owner"], ["invited_by", nil], ["permissions", "{}"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeature Create (0.1ms)[0m  [1m[32mINSERT INTO "features" ("id", "server_id", "name", "type", "icon", "position", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING "created_at"[0m  [["id", "server_1757483984885_chat_1757483984905_0"], ["server_id", "server_1757483984885"], ["name", "チャット"], ["type", "chat"], ["icon", "message-circle"], ["position", 0], ["created_at", "2025-09-10 05:59:44.908250"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeatureContent Create (0.1ms)[0m  [1m[32mINSERT INTO "feature_content" ("feature_id", "content", "updated_at") VALUES (?, ?, ?) RETURNING "updated_at"[0m  [["feature_id", "server_1757483984885_chat_1757483984905_0"], ["content", "{\"subItems\":{\"general\":{\"id\":\"general\",\"name\":\"一般\",\"type\":\"channel\",\"messages\":[]}}}"], ["updated_at", "2025-09-10 05:59:44.910154"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeature Create (0.1ms)[0m  [1m[32mINSERT INTO "features" ("id", "server_id", "name", "type", "icon", "position", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING "created_at"[0m  [["id", "server_1757483984885_forum_1757483984910_1"], ["server_id", "server_1757483984885"], ["name", "フォーラム"], ["type", "forum"], ["icon", "message-square"], ["position", 1], ["created_at", "2025-09-10 05:59:44.910642"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeatureContent Create (0.1ms)[0m  [1m[32mINSERT INTO "feature_content" ("feature_id", "content", "updated_at") VALUES (?, ?, ?) RETURNING "updated_at"[0m  [["feature_id", "server_1757483984885_forum_1757483984910_1"], ["content", "{\"subItems\":{\"announcements\":{\"id\":\"announcements\",\"name\":\"お知らせ\",\"type\":\"thread\",\"posts\":[]}}}"], ["updated_at", "2025-09-10 05:59:44.911025"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeature Create (0.1ms)[0m  [1m[32mINSERT INTO "features" ("id", "server_id", "name", "type", "icon", "position", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING "created_at"[0m  [["id", "server_1757483984885_whiteboard_1757483984911_2"], ["server_id", "server_1757483984885"], ["name", "ホワイトボード"], ["type", "whiteboard"], ["icon", "edit-3"], ["position", 2], ["created_at", "2025-09-10 05:59:44.911353"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeatureContent Create (0.1ms)[0m  [1m[32mINSERT INTO "feature_content" ("feature_id", "content", "updated_at") VALUES (?, ?, ?) RETURNING "updated_at"[0m  [["feature_id", "server_1757483984885_whiteboard_1757483984911_2"], ["content", "{\"boards\":{\"main\":{\"id\":\"main\",\"name\":\"メインボード\",\"elements\":{}}}}"], ["updated_at", "2025-09-10 05:59:44.911711"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeature Create (0.1ms)[0m  [1m[32mINSERT INTO "features" ("id", "server_id", "name", "type", "icon", "position", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING "created_at"[0m  [["id", "server_1757483984885_storage_1757483984911_3"], ["server_id", "server_1757483984885"], ["name", "ファイル共有"], ["type", "storage"], ["icon", "folder"], ["position", 3], ["created_at", "2025-09-10 05:59:44.912034"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeatureContent Create (0.2ms)[0m  [1m[32mINSERT INTO "feature_content" ("feature_id", "content", "updated_at") VALUES (?, ?, ?) RETURNING "updated_at"[0m  [["feature_id", "server_1757483984885_storage_1757483984911_3"], ["content", "{}"], ["updated_at", "2025-09-10 05:59:44.912378"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeature Create (0.1ms)[0m  [1m[32mINSERT INTO "features" ("id", "server_id", "name", "type", "icon", "position", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING "created_at"[0m  [["id", "server_1757483984885_survey_1757483984912_4"], ["server_id", "server_1757483984885"], ["name", "アンケート"], ["type", "survey"], ["icon", "clipboard-list"], ["position", 4], ["created_at", "2025-09-10 05:59:44.912850"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeatureContent Create (0.1ms)[0m  [1m[32mINSERT INTO "feature_content" ("feature_id", "content", "updated_at") VALUES (?, ?, ?) RETURNING "updated_at"[0m  [["feature_id", "server_1757483984885_survey_1757483984912_4"], ["content", "{\"surveys\":{},\"responses\":{}}"], ["updated_at", "2025-09-10 05:59:44.913196"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeature Create (0.1ms)[0m  [1m[32mINSERT INTO "features" ("id", "server_id", "name", "type", "icon", "position", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING "created_at"[0m  [["id", "server_1757483984885_projects_1757483984913_5"], ["server_id", "server_1757483984885"], ["name", "プロジェクト"], ["type", "projects"], ["icon", "git-branch"], ["position", 5], ["created_at", "2025-09-10 05:59:44.913546"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeatureContent Create (0.1ms)[0m  [1m[32mINSERT INTO "feature_content" ("feature_id", "content", "updated_at") VALUES (?, ?, ?) RETURNING "updated_at"[0m  [["feature_id", "server_1757483984885_projects_1757483984913_5"], ["content", "{\"projects\":{},\"tasks\":{}}"], ["updated_at", "2025-09-10 05:59:44.913911"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeature Create (0.1ms)[0m  [1m[32mINSERT INTO "features" ("id", "server_id", "name", "type", "icon", "position", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING "created_at"[0m  [["id", "server_1757483984885_wiki_1757483984914_6"], ["server_id", "server_1757483984885"], ["name", "Wiki"], ["type", "wiki"], ["icon", "book"], ["position", 6], ["created_at", "2025-09-10 05:59:44.914226"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeatureContent Create (0.1ms)[0m  [1m[32mINSERT INTO "feature_content" ("feature_id", "content", "updated_at") VALUES (?, ?, ?) RETURNING "updated_at"[0m  [["feature_id", "server_1757483984885_wiki_1757483984914_6"], ["content", "{\"pages\":{\"welcome\":{\"id\":\"welcome\",\"title\":\"ようこそ\",\"content\":\"このWikiページへようこそ！\\n\\n自由に編集してください。\",\"author\":\"システム\",\"created_at\":1757483984.9145234,\"updated_at\":1757483984.914525,\"tags\":[\"歓迎\"]}}}"], ["updated_at", "2025-09-10 05:59:44.914588"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeature Create (0.1ms)[0m  [1m[32mINSERT INTO "features" ("id", "server_id", "name", "type", "icon", "position", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING "created_at"[0m  [["id", "server_1757483984885_calendar_1757483984914_7"], ["server_id", "server_1757483984885"], ["name", "カレンダー"], ["type", "calendar"], ["icon", "calendar"], ["position", 7], ["created_at", "2025-09-10 05:59:44.914910"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeatureContent Create (0.1ms)[0m  [1m[32mINSERT INTO "feature_content" ("feature_id", "content", "updated_at") VALUES (?, ?, ?) RETURNING "updated_at"[0m  [["feature_id", "server_1757483984885_calendar_1757483984914_7"], ["content", "{\"events\":{}}"], ["updated_at", "2025-09-10 05:59:44.915307"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeature Create (0.1ms)[0m  [1m[32mINSERT INTO "features" ("id", "server_id", "name", "type", "icon", "position", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING "created_at"[0m  [["id", "server_1757483984885_budget_1757483984915_8"], ["server_id", "server_1757483984885"], ["name", "予算管理"], ["type", "budget"], ["icon", "dollar-sign"], ["position", 8], ["created_at", "2025-09-10 05:59:44.915642"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeatureContent Create (0.1ms)[0m  [1m[32mINSERT INTO "feature_content" ("feature_id", "content", "updated_at") VALUES (?, ?, ?) RETURNING "updated_at"[0m  [["feature_id", "server_1757483984885_budget_1757483984915_8"], ["content", "{\"accounts\":{},\"transactions\":{}}"], ["updated_at", "2025-09-10 05:59:44.915980"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeature Create (0.1ms)[0m  [1m[32mINSERT INTO "features" ("id", "server_id", "name", "type", "icon", "position", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING "created_at"[0m  [["id", "server_1757483984885_inventory_1757483984916_9"], ["server_id", "server_1757483984885"], ["name", "物品管理"], ["type", "inventory"], ["icon", "package"], ["position", 9], ["created_at", "2025-09-10 05:59:44.916300"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeatureContent Create (0.1ms)[0m  [1m[32mINSERT INTO "feature_content" ("feature_id", "content", "updated_at") VALUES (?, ?, ?) RETURNING "updated_at"[0m  [["feature_id", "server_1757483984885_inventory_1757483984916_9"], ["content", "{\"items\":{},\"categories\":[\"機材\",\"備品\",\"書籍\",\"電子機器\"],\"locations\":[\"メインオフィス\",\"倉庫\",\"研究室\"]}"], ["updated_at", "2025-09-10 05:59:44.916641"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeature Create (0.1ms)[0m  [1m[32mINSERT INTO "features" ("id", "server_id", "name", "type", "icon", "position", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING "created_at"[0m  [["id", "server_1757483984885_members_1757483984916_10"], ["server_id", "server_1757483984885"], ["name", "メンバー"], ["type", "members"], ["icon", "users"], ["position", 10], ["created_at", "2025-09-10 05:59:44.916950"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeatureContent Create (0.1ms)[0m  [1m[32mINSERT INTO "feature_content" ("feature_id", "content", "updated_at") VALUES (?, ?, ?) RETURNING "updated_at"[0m  [["feature_id", "server_1757483984885_members_1757483984916_10"], ["content", "{\"members\":{},\"roles\":{\"admin\":{\"name\":\"管理者\",\"permissions\":[\"all\"]},\"moderator\":{\"name\":\"モデレーター\",\"permissions\":[\"moderate\"]},\"member\":{\"name\":\"メンバー\",\"permissions\":[\"basic\"]}}}"], ["updated_at", "2025-09-10 05:59:44.917280"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeature Create (0.1ms)[0m  [1m[32mINSERT INTO "features" ("id", "server_id", "name", "type", "icon", "position", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING "created_at"[0m  [["id", "server_1757483984885_album_1757483984917_11"], ["server_id", "server_1757483984885"], ["name", "アルバム"], ["type", "album"], ["icon", "image"], ["position", 11], ["created_at", "2025-09-10 05:59:44.917601"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeatureContent Create (0.1ms)[0m  [1m[32mINSERT INTO "feature_content" ("feature_id", "content", "updated_at") VALUES (?, ?, ?) RETURNING "updated_at"[0m  [["feature_id", "server_1757483984885_album_1757483984917_11"], ["content", "{\"albums\":{}}"], ["updated_at", "2025-09-10 05:59:44.917972"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeature Create (0.1ms)[0m  [1m[32mINSERT INTO "features" ("id", "server_id", "name", "type", "icon", "position", "created_at") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING "created_at"[0m  [["id", "server_1757483984885_diary_1757483984918_12"], ["server_id", "server_1757483984885"], ["name", "日記"], ["type", "diary"], ["icon", "edit"], ["position", 12], ["created_at", "2025-09-10 05:59:44.918482"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeatureContent Create (0.1ms)[0m  [1m[32mINSERT INTO "feature_content" ("feature_id", "content", "updated_at") VALUES (?, ?, ?) RETURNING "updated_at"[0m  [["feature_id", "server_1757483984885_diary_1757483984918_12"], ["content", "{\"entries\":{}}"], ["updated_at", "2025-09-10 05:59:44.919859"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mUser Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mServer Load (0.1ms)[0m  [1m[34mSELECT "servers".* FROM "servers" JOIN server_members sm ON sm.server_id = servers.id WHERE (sm.user_id = 1) ORDER BY sm.joined_at[0m
+  [1m[36mServerMember Load (0.0ms)[0m  [1m[34mSELECT "server_members".* FROM "server_members" WHERE "server_members"."server_id" = ? AND "server_members"."user_id" = ? LIMIT ?[0m  [["server_id", "server_1757483984885"], ["user_id", 1], ["LIMIT", 1]]
+  [1m[36mFeature Load (0.1ms)[0m  [1m[34mSELECT "features".* FROM "features" WHERE "features"."server_id" = ? ORDER BY "features"."position" ASC, "features"."created_at" ASC[0m  [["server_id", "server_1757483984885"]]
+  [1m[36mFeatureContent Load (0.0ms)[0m  [1m[34mSELECT "feature_content".* FROM "feature_content" ORDER BY "feature_content"."feature_id" ASC LIMIT ?[0m  [["LIMIT", 1000]]
+  [1m[36mFileRecord Load (0.1ms)[0m  [1m[34mSELECT files.*, u.username as uploader_name FROM "files" LEFT JOIN users u ON u.id = files.upload_by WHERE "files"."server_id" = ? ORDER BY "files"."created_at" DESC[0m  [["server_id", "server_1757483984885"]]
+Completed 200 OK in 48ms (Views: 0.9ms | ActiveRecord: 4.7ms | Allocations: 37214)
+
+
+Started POST "/api.cgi" for 127.0.0.1 at 2025-09-10 15:00:05 +0900
+Processing by ApiController#handle_request as */*
+  Parameters: {"featureId"=>"server_1757483984885_chat_1757483984905_0", "subItemId"=>"general", "content"=>"a"}
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mFeatureContent Load (0.1ms)[0m  [1m[34mSELECT "feature_content".* FROM "feature_content" WHERE "feature_content"."feature_id" = ? LIMIT ?[0m  [["feature_id", "server_1757483984885_chat_1757483984905_0"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeatureContent Update (0.1ms)[0m  [1m[33mUPDATE "feature_content" SET "content" = ?, "updated_at" = ? WHERE "feature_content"."feature_id" = ?[0m  [["content", "{\"subItems\":{\"general\":{\"id\":\"general\",\"name\":\"一般\",\"type\":\"channel\",\"messages\":[{\"id\":\"37a23c8b-fc8a-46ca-8b45-1cafa13fe5ef\",\"authorId\":\"rinta4\",\"authorName\":\"rinta4\",\"content\":\"a\",\"timestamp\":1757484005}]}}}"], ["updated_at", "2025-09-10 06:00:05.543384"], ["feature_id", "server_1757483984885_chat_1757483984905_0"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mUser Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mServer Load (0.1ms)[0m  [1m[34mSELECT "servers".* FROM "servers" JOIN server_members sm ON sm.server_id = servers.id WHERE (sm.user_id = 1) ORDER BY sm.joined_at[0m
+  [1m[36mServerMember Load (0.0ms)[0m  [1m[34mSELECT "server_members".* FROM "server_members" WHERE "server_members"."server_id" = ? AND "server_members"."user_id" = ? LIMIT ?[0m  [["server_id", "server_1757483984885"], ["user_id", 1], ["LIMIT", 1]]
+  [1m[36mFeature Load (0.4ms)[0m  [1m[34mSELECT "features".* FROM "features" WHERE "features"."server_id" = ? ORDER BY "features"."position" ASC, "features"."created_at" ASC[0m  [["server_id", "server_1757483984885"]]
+  [1m[36mFeatureContent Load (0.0ms)[0m  [1m[34mSELECT "feature_content".* FROM "feature_content" ORDER BY "feature_content"."feature_id" ASC LIMIT ?[0m  [["LIMIT", 1000]]
+  [1m[36mFileRecord Load (0.3ms)[0m  [1m[34mSELECT files.*, u.username as uploader_name FROM "files" LEFT JOIN users u ON u.id = files.upload_by WHERE "files"."server_id" = ? ORDER BY "files"."created_at" DESC[0m  [["server_id", "server_1757483984885"]]
+Completed 200 OK in 24ms (Views: 0.2ms | ActiveRecord: 1.2ms | Allocations: 4297)
+
+
+Started POST "/api.cgi" for 127.0.0.1 at 2025-09-10 15:00:22 +0900
+Processing by ApiController#handle_request as */*
+  Parameters: {"featureId"=>"server_1757483984885_wiki_1757483984914_6", "content"=>"{\"pages\":{\"welcome\":{\"id\":\"welcome\",\"title\":\"ようこそ\",\"content\":\"このWikiページへようこそ！\\n\\n自由に編集してください。\",\"author\":\"システム\",\"created_at\":1757483984.9145234,\"updated_at\":1757483984.914525,\"tags\":[\"歓迎\"]},\"1757484022608\":{\"id\":\"1757484022608\",\"title\":\"wiki\",\"content\":\"e\",\"author\":\"rinta4\",\"created_at\":1757484022.608,\"updated_at\":1757484022.608}}}"}
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mFeatureContent Load (0.1ms)[0m  [1m[34mSELECT "feature_content".* FROM "feature_content" WHERE "feature_content"."feature_id" = ? LIMIT ?[0m  [["feature_id", "server_1757483984885_wiki_1757483984914_6"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeatureContent Update (0.3ms)[0m  [1m[33mUPDATE "feature_content" SET "content" = ?, "updated_at" = ? WHERE "feature_content"."feature_id" = ?[0m  [["content", "{\"pages\":{\"welcome\":{\"id\":\"welcome\",\"title\":\"ようこそ\",\"content\":\"このWikiページへようこそ！\\n\\n自由に編集してください。\",\"author\":\"システム\",\"created_at\":1757483984.9145234,\"updated_at\":1757483984.914525,\"tags\":[\"歓迎\"]},\"1757484022608\":{\"id\":\"1757484022608\",\"title\":\"wiki\",\"content\":\"e\",\"author\":\"rinta4\",\"created_at\":1757484022.608,\"updated_at\":1757484022.608}}}"], ["updated_at", "2025-09-10 06:00:22.627980"], ["feature_id", "server_1757483984885_wiki_1757483984914_6"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mServer Load (0.1ms)[0m  [1m[34mSELECT "servers".* FROM "servers" JOIN server_members sm ON sm.server_id = servers.id WHERE (sm.user_id = 1) ORDER BY sm.joined_at[0m
+  [1m[36mServerMember Load (0.0ms)[0m  [1m[34mSELECT "server_members".* FROM "server_members" WHERE "server_members"."server_id" = ? AND "server_members"."user_id" = ? LIMIT ?[0m  [["server_id", "server_1757483984885"], ["user_id", 1], ["LIMIT", 1]]
+  [1m[36mFeature Load (0.0ms)[0m  [1m[34mSELECT "features".* FROM "features" WHERE "features"."server_id" = ? ORDER BY "features"."position" ASC, "features"."created_at" ASC[0m  [["server_id", "server_1757483984885"]]
+  [1m[36mFeatureContent Load (0.0ms)[0m  [1m[34mSELECT "feature_content".* FROM "feature_content" ORDER BY "feature_content"."feature_id" ASC LIMIT ?[0m  [["LIMIT", 1000]]
+  [1m[36mFileRecord Load (0.1ms)[0m  [1m[34mSELECT files.*, u.username as uploader_name FROM "files" LEFT JOIN users u ON u.id = files.upload_by WHERE "files"."server_id" = ? ORDER BY "files"."created_at" DESC[0m  [["server_id", "server_1757483984885"]]
+Completed 200 OK in 7ms (Views: 0.2ms | ActiveRecord: 0.9ms | Allocations: 3487)
+
+
+Started POST "/api.cgi" for 127.0.0.1 at 2025-09-10 15:00:33 +0900
+Processing by ApiController#handle_request as */*
+  Parameters: {"featureId"=>"server_1757483984885_wiki_1757483984914_6", "content"=>"{\"pages\":{\"welcome\":{\"id\":\"welcome\",\"title\":\"ようこそ\",\"content\":\"このWikiページへようこそ！\\n\\n自由に編集してください。\",\"author\":\"システム\",\"created_at\":1757483984.9145234,\"updated_at\":1757483984.914525,\"tags\":[\"歓迎\"]},\"1757484022608\":{\"id\":\"1757484022608\",\"title\":\"wiki\",\"content\":\"e# Janus-backend\\n\\n## これは何？\\n\\nこのリポジトリは、Janusのバックエンド部分のリポジトリです。\\n\\n## 技術スタック\\n\\n- Ruby on Rails\\n- Auth0(認証プラットフォーム)\\n\\n## 環境構築\\n\\nまず、[GitHubのリポジトリ](https://github.com/Retasusan/janus-backend)をクローンします。\\nクローンは、以下のコマンドで行えます。\\n\\n```bash\\ncd リポジトリを置きたいディレクトリ\\ngit clone https://github.com/Retasusan/janus-backend.git\\n```\\n\\n次に、クローンしたディレクトリに移動します。\\n\\n```bash\\ncd janus-backend\\n```\\n\\n次に、起動に必要な環境変数を設定します。`.env.local`ファイルを作成して環境変数を設定してください。環境変数は、[Retasusan](https://github.com/Retasusan)にコンタクトをとって、共有してもらってください。\\n\\n最後に、サーバーを起動します。Dockerを使用するので、Docker Desktopなどをインストールしてから、以下のコマンドを実行してください。\\n\\n```bash\\ndocker compose up -d\\n```\\n\\nDockerのデーモンが起動していることを確認した上で、起動してください。また、ポート番号を8000に変えているので、サーバの起動はそのポートにアクセスして確認してください。\\n\\n## コマンドの実行\\n\\nコマンドを実行するには、以下のコマンドで、コンテナに入ります。\\n\\n```bash\\ndocker compose exec backend bash\\n```\\n\",\"author\":\"rinta4\",\"created_at\":1757484022.608,\"updated_at\":1757484033.655}}}"}
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mFeatureContent Load (0.1ms)[0m  [1m[34mSELECT "feature_content".* FROM "feature_content" WHERE "feature_content"."feature_id" = ? LIMIT ?[0m  [["feature_id", "server_1757483984885_wiki_1757483984914_6"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeatureContent Update (0.2ms)[0m  [1m[33mUPDATE "feature_content" SET "content" = ?, "updated_at" = ? WHERE "feature_content"."feature_id" = ?[0m  [["content", "{\"pages\":{\"welcome\":{\"id\":\"welcome\",\"title\":\"ようこそ\",\"content\":\"このWikiページへようこそ！\\n\\n自由に編集してください。\",\"author\":\"システム\",\"created_at\":1757483984.9145234,\"updated_at\":1757483984.914525,\"tags\":[\"歓迎\"]},\"1757484022608\":{\"id\":\"1757484022608\",\"title\":\"wiki\",\"content\":\"e# Janus-backend\\n\\n## これは何？\\n\\nこのリポジトリは、Janusのバックエンド部分のリポジトリです。\\n\\n## 技術スタック\\n\\n- Ruby on Rails\\n- Auth0(認証プラットフォーム)\\n\\n## 環境構築\\n\\nまず、[GitHubのリポジトリ](https://github.com/Retasusan/janus-backend)をクローンします。\\nクローンは、以下のコマンドで行えます。\\n\\n```bash\\ncd リポジトリを置きたいディレクトリ\\ngit clone https://github.com/Retasusan/janus-backend.git\\n```\\n\\n次に、クローンしたディレクトリに移動します。\\n\\n```bash\\ncd janus-backend\\n```\\n\\n次に、起動に必要な環境変数を設定します。`.env.local`ファイルを作成して環境変数を設定してください。環境変数は、[Retasusan](https://github.com/Retasusan)にコンタクトをとって、共有してもらってください。\\n\\n最後に、サーバーを起動します。Dockerを使用するので、Docker Desktopなどをインストールしてから、以下のコマンドを実行してください。\\n\\n```bash\\ndocker compose up -d\\n```\\n\\nDockerのデーモンが起動していることを確認した上で、起動してください。また、ポート番号を8000に変えているので、サーバの起動はそのポートにアクセスして確認してください。\\n\\n## コマンドの実行\\n\\nコマンドを実行するには、以下のコマンドで、コンテナに入ります。\\n\\n```bash\\ndocker compose exec backend bash\\n```\\n\",\"author\":\"rinta4\",\"created_at\":1757484022.608,\"updated_at\":1757484033.655}}}"], ["updated_at", "2025-09-10 06:00:33.674120"], ["feature_id", "server_1757483984885_wiki_1757483984914_6"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mUser Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mServer Load (0.1ms)[0m  [1m[34mSELECT "servers".* FROM "servers" JOIN server_members sm ON sm.server_id = servers.id WHERE (sm.user_id = 1) ORDER BY sm.joined_at[0m
+  [1m[36mServerMember Load (0.0ms)[0m  [1m[34mSELECT "server_members".* FROM "server_members" WHERE "server_members"."server_id" = ? AND "server_members"."user_id" = ? LIMIT ?[0m  [["server_id", "server_1757483984885"], ["user_id", 1], ["LIMIT", 1]]
+  [1m[36mFeature Load (0.0ms)[0m  [1m[34mSELECT "features".* FROM "features" WHERE "features"."server_id" = ? ORDER BY "features"."position" ASC, "features"."created_at" ASC[0m  [["server_id", "server_1757483984885"]]
+  [1m[36mFeatureContent Load (0.0ms)[0m  [1m[34mSELECT "feature_content".* FROM "feature_content" ORDER BY "feature_content"."feature_id" ASC LIMIT ?[0m  [["LIMIT", 1000]]
+  [1m[36mFileRecord Load (0.1ms)[0m  [1m[34mSELECT files.*, u.username as uploader_name FROM "files" LEFT JOIN users u ON u.id = files.upload_by WHERE "files"."server_id" = ? ORDER BY "files"."created_at" DESC[0m  [["server_id", "server_1757483984885"]]
+Completed 200 OK in 6ms (Views: 0.2ms | ActiveRecord: 0.8ms | Allocations: 3483)
+
+
+Started POST "/api.cgi" for 127.0.0.1 at 2025-09-10 15:00:45 +0900
+Processing by ApiController#handle_request as */*
+  Parameters: {"featureId"=>"server_1757483984885_album_1757483984917_11", "content"=>"{\"albums\":{\"1757484045700\":{\"id\":\"1757484045700\",\"title\":\"に\",\"description\":\"\",\"photos\":[],\"createdBy\":\"rinta4\",\"createdAt\":1757484045700}}}"}
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mFeatureContent Load (0.0ms)[0m  [1m[34mSELECT "feature_content".* FROM "feature_content" WHERE "feature_content"."feature_id" = ? LIMIT ?[0m  [["feature_id", "server_1757483984885_album_1757483984917_11"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mFeatureContent Update (0.2ms)[0m  [1m[33mUPDATE "feature_content" SET "content" = ?, "updated_at" = ? WHERE "feature_content"."feature_id" = ?[0m  [["content", "{\"albums\":{\"1757484045700\":{\"id\":\"1757484045700\",\"title\":\"に\",\"description\":\"\",\"photos\":[],\"createdBy\":\"rinta4\",\"createdAt\":1757484045700}}}"], ["updated_at", "2025-09-10 06:00:45.717784"], ["feature_id", "server_1757483984885_album_1757483984917_11"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mUser Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mServer Load (0.1ms)[0m  [1m[34mSELECT "servers".* FROM "servers" JOIN server_members sm ON sm.server_id = servers.id WHERE (sm.user_id = 1) ORDER BY sm.joined_at[0m
+  [1m[36mServerMember Load (0.0ms)[0m  [1m[34mSELECT "server_members".* FROM "server_members" WHERE "server_members"."server_id" = ? AND "server_members"."user_id" = ? LIMIT ?[0m  [["server_id", "server_1757483984885"], ["user_id", 1], ["LIMIT", 1]]
+  [1m[36mFeature Load (0.0ms)[0m  [1m[34mSELECT "features".* FROM "features" WHERE "features"."server_id" = ? ORDER BY "features"."position" ASC, "features"."created_at" ASC[0m  [["server_id", "server_1757483984885"]]
+  [1m[36mFeatureContent Load (0.0ms)[0m  [1m[34mSELECT "feature_content".* FROM "feature_content" ORDER BY "feature_content"."feature_id" ASC LIMIT ?[0m  [["LIMIT", 1000]]
+  [1m[36mFileRecord Load (0.1ms)[0m  [1m[34mSELECT files.*, u.username as uploader_name FROM "files" LEFT JOIN users u ON u.id = files.upload_by WHERE "files"."server_id" = ? ORDER BY "files"."created_at" DESC[0m  [["server_id", "server_1757483984885"]]
+Completed 200 OK in 5ms (Views: 0.2ms | ActiveRecord: 0.7ms | Allocations: 3480)
+
+
+Started POST "/api.cgi" for 127.0.0.1 at 2025-09-10 15:01:04 +0900
+Processing by ApiController#handle_request as */*
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mServer Load (0.3ms)[0m  [1m[34mSELECT "servers".* FROM "servers" JOIN server_members sm ON sm.server_id = servers.id WHERE (sm.user_id = 1) ORDER BY sm.joined_at[0m
+  [1m[36mServerMember Load (0.1ms)[0m  [1m[34mSELECT "server_members".* FROM "server_members" WHERE "server_members"."server_id" = ? AND "server_members"."user_id" = ? LIMIT ?[0m  [["server_id", "server_1757483984885"], ["user_id", 1], ["LIMIT", 1]]
+  [1m[36mFeature Load (0.1ms)[0m  [1m[34mSELECT "features".* FROM "features" WHERE "features"."server_id" = ? ORDER BY "features"."position" ASC, "features"."created_at" ASC[0m  [["server_id", "server_1757483984885"]]
+  [1m[36mFeatureContent Load (0.1ms)[0m  [1m[34mSELECT "feature_content".* FROM "feature_content" ORDER BY "feature_content"."feature_id" ASC LIMIT ?[0m  [["LIMIT", 1000]]
+  [1m[36mFileRecord Load (0.2ms)[0m  [1m[34mSELECT files.*, u.username as uploader_name FROM "files" LEFT JOIN users u ON u.id = files.upload_by WHERE "files"."server_id" = ? ORDER BY "files"."created_at" DESC[0m  [["server_id", "server_1757483984885"]]
+Completed 200 OK in 8ms (Views: 0.5ms | ActiveRecord: 1.2ms | Allocations: 2751)
+
+
+Started POST "/api.cgi" for 127.0.0.1 at 2025-09-10 17:43:17 +0900
+Processing by ApiController#handle_request as */*
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mServer Load (0.3ms)[0m  [1m[34mSELECT "servers".* FROM "servers" JOIN server_members sm ON sm.server_id = servers.id WHERE (sm.user_id = 1) ORDER BY sm.joined_at[0m
+  [1m[36mServerMember Load (0.1ms)[0m  [1m[34mSELECT "server_members".* FROM "server_members" WHERE "server_members"."server_id" = ? AND "server_members"."user_id" = ? LIMIT ?[0m  [["server_id", "server_1757483984885"], ["user_id", 1], ["LIMIT", 1]]
+  [1m[36mFeature Load (0.1ms)[0m  [1m[34mSELECT "features".* FROM "features" WHERE "features"."server_id" = ? ORDER BY "features"."position" ASC, "features"."created_at" ASC[0m  [["server_id", "server_1757483984885"]]
+  [1m[36mFeatureContent Load (0.1ms)[0m  [1m[34mSELECT "feature_content".* FROM "feature_content" ORDER BY "feature_content"."feature_id" ASC LIMIT ?[0m  [["LIMIT", 1000]]
+  [1m[36mFileRecord Load (0.1ms)[0m  [1m[34mSELECT files.*, u.username as uploader_name FROM "files" LEFT JOIN users u ON u.id = files.upload_by WHERE "files"."server_id" = ? ORDER BY "files"."created_at" DESC[0m  [["server_id", "server_1757483984885"]]
+Completed 200 OK in 7ms (Views: 0.3ms | ActiveRecord: 1.9ms | Allocations: 3170)
+
+
+Started POST "/api.cgi" for 127.0.0.1 at 2025-09-10 17:43:30 +0900
+Processing by ApiController#handle_request as */*
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mServer Load (0.2ms)[0m  [1m[34mSELECT "servers".* FROM "servers" JOIN server_members sm ON sm.server_id = servers.id WHERE (sm.user_id = 1) ORDER BY sm.joined_at[0m
+  [1m[36mServerMember Load (0.0ms)[0m  [1m[34mSELECT "server_members".* FROM "server_members" WHERE "server_members"."server_id" = ? AND "server_members"."user_id" = ? LIMIT ?[0m  [["server_id", "server_1757483984885"], ["user_id", 1], ["LIMIT", 1]]
+  [1m[36mFeature Load (0.1ms)[0m  [1m[34mSELECT "features".* FROM "features" WHERE "features"."server_id" = ? ORDER BY "features"."position" ASC, "features"."created_at" ASC[0m  [["server_id", "server_1757483984885"]]
+  [1m[36mFeatureContent Load (0.0ms)[0m  [1m[34mSELECT "feature_content".* FROM "feature_content" ORDER BY "feature_content"."feature_id" ASC LIMIT ?[0m  [["LIMIT", 1000]]
+  [1m[36mFileRecord Load (0.1ms)[0m  [1m[34mSELECT files.*, u.username as uploader_name FROM "files" LEFT JOIN users u ON u.id = files.upload_by WHERE "files"."server_id" = ? ORDER BY "files"."created_at" DESC[0m  [["server_id", "server_1757483984885"]]
+Completed 200 OK in 4ms (Views: 0.3ms | ActiveRecord: 0.5ms | Allocations: 2739)
+
+
+- Gracefully stopping, waiting for requests to finish
+=== puma shutdown: 2025-09-10 17:53:51 +0900 ===
+- Goodbye!
+Exiting
